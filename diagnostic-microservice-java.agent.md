@@ -118,7 +118,13 @@ Al terminar, muestra en el chat el resumen ejecutivo y la tabla de hallazgos, e 
 
 # MODO IMPACTO
 
-**No implementes nada**: solo analiza y propone.
+**No implementes nada**: solo analiza y propone. Pero el análisis debe ser **concreto a nivel de código**: el objetivo es que un desarrollador sepa exactamente qué archivos abrir, qué clases y métodos modificar y qué clases nuevas crear, con sus nombres y paquetes.
+
+## Regla obligatoria de exploración del código
+- El diagnóstico (`docs/diagnostico-microservicio.md`) es solo un mapa para saber dónde buscar. **No es suficiente**: debes abrir y leer el código fuente real de cada clase que vas a proponer modificar.
+- Recorre el flujo completo que afecta el requerimiento, clase por clase, desde el punto de entrada (controller/resource, consumer o job) hasta la salida (repositorio, cliente externo, productor de eventos, cache), leyendo cada archivo.
+- Antes de proponer una clase nueva, busca si ya existe algo similar que se pueda extender o reutilizar.
+- Para nombrar clases, métodos y paquetes nuevos, sigue las convenciones que ya usa el proyecto (sufijos como `UseCase`, `Service`, `Adapter`, `Port`, `Repository`, `Mapper`, `Dto`, estructura de paquetes). Cita una clase existente como referencia de la convención.
 
 ## Paso 1 — Entendimiento del requerimiento
 1. Reformula el requerimiento en tus palabras y descompónlo en cambios funcionales concretos.
@@ -147,13 +153,31 @@ Recorre el servicio capa por capa e indica si se ve afectada y por qué:
 
 Rastrea los efectos indirectos: busca referencias a las clases y métodos que se tocarían para saber quién más los usa.
 
-## Paso 3 — Puntos de cambio propuestos
-Para cada punto de cambio entrega:
-- Repositorio donde se hace (**microservicio** o **repositorio de esquemas**)
-- Archivo, clase y método (o "nuevo" y dónde ubicarlo); para cambios de esquema, el objeto de base de datos afectado
-- Tipo: crear / modificar / eliminar
-- Qué cambia y por qué
-- Cómo respeta la arquitectura existente (si el servicio es hexagonal, el cambio entra por el puerto correcto, sin saltarse capas)
+## Paso 3 — Puntos de cambio propuestos (detalle a nivel de clase)
+Entrega una ficha por cada clase o archivo afectado. **No uses descripciones genéricas** como "modificar la capa de servicio" o "agregar validación en el dominio": siempre nombra la clase y el método concretos.
+
+**Para cada clase EXISTENTE a modificar:**
+- Repositorio: microservicio o repositorio de esquemas
+- Ruta completa del archivo (por ejemplo `src/main/java/com/empresa/cuentas/application/service/AperturaCuentaService.java`)
+- Clase y capa (entrada, aplicación, dominio, puerto, adaptador, configuración)
+- Métodos a modificar: firma actual del método y qué cambia en él
+- Métodos nuevos dentro de la clase: firma propuesta (nombre, parámetros, tipo de retorno) y responsabilidad
+- Atributos, anotaciones o dependencias inyectadas que se agregan o cambian
+- Por qué cambia, ligado a un criterio de aceptación o regla del requerimiento
+
+**Para cada clase NUEVA a crear:**
+- Ruta y paquete donde debe ubicarse, siguiendo la estructura actual
+- Nombre de la clase y tipo (clase, interface, record, enum, excepción, DTO, mapper, adaptador, puerto)
+- Responsabilidad en una o dos líneas
+- Firmas de sus métodos públicos (sin implementación)
+- Qué clases existentes la usarán o implementará
+- Clase existente que sirve de referencia de estilo
+
+**Para archivos que no son Java:** propiedades o YAML (claves nuevas o modificadas), contratos OpenAPI/AsyncAPI (paths, campos), y objetos de base de datos en el repositorio de esquemas (tabla, columna, tipo, nulabilidad, índice).
+
+**Para pruebas:** clases de test existentes a modificar y clases de test nuevas a crear, con los escenarios que deben cubrir.
+
+Muestra también un **árbol de archivos** con solo los archivos afectados, marcando cada uno como `[MODIFICAR]` o `[NUEVO]`.
 
 Si hay más de una forma razonable de implementarlo, presenta hasta 2 alternativas con sus trade-offs y recomienda una. Cuando sea viable, considera una alternativa que evite cambiar el esquema compartido.
 
@@ -170,7 +194,10 @@ Guarda el resultado en `docs/impacto-<nombre-corto-del-requerimiento>.md` (en mi
 1. Resumen del requerimiento y supuestos
 2. Preguntas abiertas
 3. Mapa de impacto (tabla: capa | ¿afectada? | detalle)
-4. Puntos de cambio (tabla: #, repositorio, archivo/clase/método u objeto de BD, tipo, descripción, dependencias)
+4. Puntos de cambio:
+   - Árbol de archivos afectados con `[MODIFICAR]` / `[NUEVO]`
+   - Tabla resumen: #, repositorio, ruta del archivo, clase, método(s), tipo (crear/modificar/eliminar), descripción, criterio de aceptación relacionado
+   - Ficha detallada por clase (según el Paso 3)
 5. Cambios de datos (si aplica): cambios de esquema, estrategia expand/contract, migración de datos, invalidación de cache y orden de despliegue
 6. Diagrama de secuencia del flujo resultante (Mermaid), destacando lo nuevo o modificado
 7. Alternativas y recomendación
@@ -179,4 +206,12 @@ Guarda el resultado en `docs/impacto-<nombre-corto-del-requerimiento>.md` (en mi
 10. Orden sugerido de implementación
 11. Complejidad estimada (Baja/Media/Alta) con justificación
 
-Al terminar, muestra en el chat las preguntas abiertas y la tabla de puntos de cambio.
+## Verificación antes de entregar
+Antes de guardar el documento, revisa que:
+- Cada fila de la tabla de puntos de cambio tenga una **ruta de archivo real** (verificada abriendo el archivo) o esté marcada como `[NUEVO]` con su ruta propuesta.
+- Cada clase a modificar indique al menos un **método concreto** con su firma.
+- Cada clase nueva tenga **paquete, nombre y firmas** de sus métodos públicos.
+- Cada criterio de aceptación del requerimiento esté cubierto por al menos un punto de cambio.
+Si algo no cumple, vuelve a explorar el código y complétalo. Si de verdad no puedes ubicarlo, márcalo como **[No determinable]** y explica qué buscaste.
+
+Al terminar, muestra en el chat las preguntas abiertas, el árbol de archivos afectados y la tabla resumen de puntos de cambio.
