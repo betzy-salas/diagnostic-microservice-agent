@@ -107,10 +107,24 @@ Guarda el resultado en `docs/diagnostico-microservicio.md` con esta estructura:
 4. Diagnóstico técnico
 5. **Inventario de datos** (tabla: almacén | esquema/colección/patrón de clave | tabla o entidad | lectura/escritura | clase o repositorio que lo usa | ¿posiblemente compartida? | observaciones)
 6. Mapa de componentes (diagrama Mermaid de componentes, integraciones y almacenes de datos)
-7. Diagramas de secuencia de los flujos principales (Mermaid)
-8. Hallazgos priorizados (tabla: ID, hallazgo, evidencia, severidad Alta/Media/Baja, recomendación)
-9. Preguntas abiertas para el equipo (lo que no se pudo determinar del código, incluyendo supuestos sobre la base de datos a validar con el repositorio de esquemas)
-10. **Índice de ubicación**: para cada capacidad de negocio, los archivos y clases donde vive (se usa en el Modo Impacto)
+7. **Diagramas de clases** (Mermaid `classDiagram`), según las reglas de la sección "Diagramas de clases" más abajo
+8. Diagramas de secuencia de los flujos principales (Mermaid)
+9. Hallazgos priorizados (tabla: ID, hallazgo, evidencia, severidad Alta/Media/Baja, recomendación)
+10. Preguntas abiertas para el equipo (lo que no se pudo determinar del código, incluyendo supuestos sobre la base de datos a validar con el repositorio de esquemas)
+11. **Índice de ubicación**: para cada capacidad de negocio, los archivos y clases donde vive (se usa en el Modo Impacto)
+
+## Diagramas de clases
+Genera los diagramas a partir del código real (abre las clases; no los deduzcas solo por nombres). Usa sintaxis Mermaid `classDiagram` válida.
+
+- **No hagas un único diagrama gigante.** Genera uno por cada vista:
+  1. **Modelo de dominio**: entidades, agregados, value objects y enums de estado, con sus atributos principales (nombre y tipo) y métodos de negocio relevantes. Muestra relaciones: composición (`*--`), agregación (`o--`), asociación (`-->`) con su cardinalidad (`"1" --> "*"`).
+  2. **Arquitectura por capas** (uno por cada flujo principal, máximo 3 a 5): controller/resource → caso de uso/servicio → puertos → adaptadores → repositorios/clientes. Muestra implementaciones de interfaces (`<|..`), herencias (`<|--`) y dependencias inyectadas (`..>`). Incluye solo los métodos públicos usados en el flujo.
+  3. **Modelo de persistencia** (si está separado del dominio): entidades JPA/Panache o documentos NoSQL y sus relaciones, indicando en una nota la tabla o colección que mapea cada una.
+- Marca el tipo de cada elemento con estereotipos: `<<interface>>`, `<<abstract>>`, `<<enumeration>>`, `<<entity>>`, `<<record>>`, `<<port>>`, `<<adapter>>`, `<<service>>`, `<<controller>>`.
+- Visibilidad con notación UML: `+` público, `-` privado, `#` protegido. Omite getters, setters, `equals`, `hashCode` y `toString`.
+- Usa los nombres reales de las clases (sin paquete en el diagrama). Debajo de cada diagrama agrega una tabla breve: clase | paquete | archivo.
+- Si una vista tiene más de 15 clases, divídela en subdiagramas por módulo o subdominio.
+- Señala en el texto (no en el diagrama) las anomalías que el diagrama revele: dependencias que violan capas, ciclos, clases con demasiadas dependencias o dominio dependiendo de infraestructura. Llévalas también a la tabla de hallazgos.
 
 Al terminar, muestra en el chat el resumen ejecutivo y la tabla de hallazgos, e indica que puede entregarte un requerimiento para pasar al Modo Impacto.
 
@@ -199,12 +213,17 @@ Guarda el resultado en `docs/impacto-<nombre-corto-del-requerimiento>.md` (en mi
    - Tabla resumen: #, repositorio, ruta del archivo, clase, método(s), tipo (crear/modificar/eliminar), descripción, criterio de aceptación relacionado
    - Ficha detallada por clase (según el Paso 3)
 5. Cambios de datos (si aplica): cambios de esquema, estrategia expand/contract, migración de datos, invalidación de cache y orden de despliegue
-6. Diagrama de secuencia del flujo resultante (Mermaid), destacando lo nuevo o modificado
-7. Alternativas y recomendación
-8. Riesgos y mitigaciones
-9. Plan de pruebas (unitarias, integración, contrato) indicando qué cubre cada una
-10. Orden sugerido de implementación
-11. Complejidad estimada (Baja/Media/Alta) con justificación
+6. **Diagrama de clases del cambio** (Mermaid `classDiagram`): solo las clases afectadas y sus vecinas directas, mostrando cómo quedan después del cambio. Aplica las mismas reglas de notación del Modo Diagnóstico y diferencia el estado de cada clase así:
+   - Clases nuevas: estereotipo `<<nuevo>>` y estilo `style NombreClase fill:#d4edda,stroke:#28a745`
+   - Clases modificadas: estereotipo `<<modificado>>` y estilo `style NombreClase fill:#fff3cd,stroke:#ffc107`
+   - Clases sin cambios: sin estilo especial
+   - En las clases modificadas, incluye los métodos y atributos nuevos o cambiados, y debajo del diagrama agrega una tabla: clase | estado (nuevo/modificado) | métodos o atributos que cambian
+7. Diagrama de secuencia del flujo resultante (Mermaid), destacando lo nuevo o modificado
+8. Alternativas y recomendación
+9. Riesgos y mitigaciones
+10. Plan de pruebas (unitarias, integración, contrato) indicando qué cubre cada una
+11. Orden sugerido de implementación
+12. Complejidad estimada (Baja/Media/Alta) con justificación
 
 ## Verificación antes de entregar
 Antes de guardar el documento, revisa que:
@@ -212,6 +231,7 @@ Antes de guardar el documento, revisa que:
 - Cada clase a modificar indique al menos un **método concreto** con su firma.
 - Cada clase nueva tenga **paquete, nombre y firmas** de sus métodos públicos.
 - Cada criterio de aceptación del requerimiento esté cubierto por al menos un punto de cambio.
+- Todas las clases marcadas `[NUEVO]` o `[MODIFICAR]` en la tabla aparezcan en el diagrama de clases del cambio con su estilo correspondiente.
 Si algo no cumple, vuelve a explorar el código y complétalo. Si de verdad no puedes ubicarlo, márcalo como **[No determinable]** y explica qué buscaste.
 
 Al terminar, muestra en el chat las preguntas abiertas, el árbol de archivos afectados y la tabla resumen de puntos de cambio.
