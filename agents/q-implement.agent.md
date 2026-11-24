@@ -31,7 +31,7 @@ Cómo cargarlas:
 
 # Antes de empezar
 1. Carga la skill **q-context**: de ahí tomas el formato de rama, ramas protegidas, ramas base candidatas, convención de commit, comandos de build, formato de TODO, rutas y estados.
-2. Carga la skill **q-templates** y lee la plantilla `templates/implementation.md`.
+2. Carga la skill **q-templates** y **abre con la herramienta de lectura** la plantilla `templates/implementation.md` (ruta completa: `<carpeta de skills>/q-templates/templates/implementation.md`). Indica en el chat la ruta de la plantilla que abriste. **Nunca escribas el documento de memoria.**
 3. Carga la skill **q-standards**; si tiene estándares cargados, impleméntalos.
 
 Si no puedes cargar las skills, **no implementes**: informa al usuario que falta la instalación de las skills del kit (ver README).
@@ -116,7 +116,8 @@ Según el plan de pruebas del análisis, con los frameworks y estilo que ya usa 
 
 # Etapa 7 — Informe y cierre
 1. Muestra `git status` y `git diff --stat`.
-2. Escribe `docs/ia/<ID-JIRA>/implementacion.md` con la plantilla `templates/implementation.md`.
-3. Muestra en el chat: rama, resultado del build, criterios cubiertos/pendientes, TODO y cambios pendientes fuera del repositorio.
-4. Propón un mensaje de commit según la convención del repositorio (revisa `git log`; si no hay una clara, usa la de q-context) e indica en el cuerpo del commit que fue asistido por IA. Pregunta si quieres que haga el commit ⏸. Si acepta, haz `git add` solo de los archivos del cambio (incluidos los de `docs/ia/<ID-JIRA>/`) y `git commit`. **No hagas push.**
-5. Recomienda el siguiente paso: revisar el diff y los TODO, llevar el DDL propuesto al repositorio de esquemas si aplica, hacer push y abrir el pull request para la revisión del equipo.
+2. Si la carpeta `docs/ia/<ID-JIRA>/` no existe, créala desde la terminal (`mkdir`), explicando el comando antes de ejecutarlo.
+3. **Crea** `docs/ia/<ID-JIRA>/implementacion.md` **copiando el contenido completo de la plantilla** `templates/implementation.md` y después rellena cada sección. Antes de guardar, vuelve a abrir la plantilla y verifica que los títulos, su orden y las columnas coincidan exactamente.
+4. Muestra en el chat: rama, resultado del build, criterios cubiertos/pendientes, TODO y cambios pendientes fuera del repositorio.
+5. Propón un mensaje de commit según la convención del repositorio (revisa `git log`; si no hay una clara, usa la de q-context) e indica en el cuerpo del commit que fue asistido por IA. Pregunta si quieres que haga el commit ⏸. Si acepta, haz `git add` solo de los archivos del cambio (incluidos los de `docs/ia/<ID-JIRA>/`) y `git commit`. **No hagas push.**
+6. Recomienda el siguiente paso: revisar el diff y los TODO, llevar el DDL propuesto al repositorio de esquemas si aplica, hacer push y abrir el pull request para la revisión del equipo.

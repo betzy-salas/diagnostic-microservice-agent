@@ -12,6 +12,16 @@ Cuando cambies la versión, actualízala también en `VERSION` y en `skills/q-co
 ## [Planificado]
 - `q-review` (1.1.0): revisión de código independiente con veredicto, trazabilidad contra el análisis de impacto y modo de corrección de observaciones en `q-implement`.
 
+## [1.0.3] - 2026-11-23
+### Corregido
+- Los agentes escribían los documentos de memoria, sin abrir la plantilla, y el resultado no coincidía exactamente (títulos abreviados, columnas faltantes). Ahora `q-diagnose`, `q-impact` y `q-implement` crean cada documento copiando la plantilla completa, indican qué plantilla abrieron y, antes de guardar, comparan títulos, orden y columnas con ella.
+- Si no pueden abrir la plantilla, se detienen y piden la ruta en vez de improvisar la estructura.
+
+## [1.0.2] - 2026-11-23
+### Corregido
+- `q-diagnose` y `q-impact` no podían guardar el documento cuando la carpeta `docs/ia/<ID-JIRA>/` no existía (sus herramientas solo crean archivos en carpetas existentes y no tienen terminal). Ahora verifican la carpeta, intentan crearla y, si no pueden, le dan al usuario el comando exacto para crearla y esperan.
+- `q-implement` crea la carpeta de la historia desde la terminal si no existe.
+
 ## [1.0.1] - 2026-11-23
 ### Corregido
 - Los agentes buscaban las skills dentro del microservicio y no las encontraban. Ahora cada agente sabe que las skills están en la carpeta de usuario de Copilot (`~/.copilot/skills/`) y las lee directamente desde ahí si Copilot no se las entrega.
