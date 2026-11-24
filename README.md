@@ -4,9 +4,10 @@ Agentes de GitHub Copilot para **evolucionar microservicios Java existentes** (S
 
 | Agente | Para qué |
 |---|---|
+| **Agente 007**, con licencia para desarrollar | Crear microservicios **nuevos** |
 | **Agente Q**, con licencia para evolucionar | Modificar microservicios **existentes** (este repositorio) |
 
-> AgenteQ toma el microservicio que ya existe y lo mejora para la misión.
+> En Bond, Q no inventa desde cero: toma el equipo que ya existe y lo mejora para la misión. Eso hace Agente Q con un microservicio.
 
 - **Versión:** ver [`VERSION`](VERSION) · Cambios: [`CHANGELOG.md`](CHANGELOG.md)
 - **Plataforma:** VS Code con GitHub Copilot Chat (modo agente)

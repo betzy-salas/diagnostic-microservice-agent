@@ -14,6 +14,8 @@ Cada documento que producen los agentes sigue una plantilla fija. Las plantillas
 | Análisis de impacto | [templates/impact.md](templates/impact.md) |
 | Informe de implementación | [templates/implementation.md](templates/implementation.md) |
 
+Las rutas son relativas a la carpeta de esta skill. Ruta completa habitual: `~/.copilot/skills/q-templates/templates/` (Windows: `C:\Users\<usuario>\.copilot\skills\q-templates\templates\`). No están dentro del microservicio.
+
 ## Reglas de uso
 1. Lee la plantilla correspondiente **antes** de escribir el documento.
 2. Completa la cabecera YAML de la plantilla. `version-kit` es la versión indicada en la skill `q-context`. `fecha` en formato `AAAA-MM-DD`.

@@ -6,7 +6,7 @@ user-invocable: false
 
 # Contexto del entorno — Agente Q
 
-Versión del kit: **1.0.0**
+Versión del kit: **1.0.1**
 
 Este archivo es la **única fuente** del contexto del entorno. Si el kit se usa en otro equipo u organización, solo se ajusta la sección "Parámetros del entorno"; los agentes no se modifican.
 

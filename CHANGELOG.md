@@ -12,6 +12,10 @@ Cuando cambies la versión, actualízala también en `VERSION` y en `skills/q-co
 ## [Planificado]
 - `q-review` (1.1.0): revisión de código independiente con veredicto, trazabilidad contra el análisis de impacto y modo de corrección de observaciones en `q-implement`.
 
+## [1.0.1] - 2026-11-23
+### Corregido
+- Los agentes buscaban las skills dentro del microservicio y no las encontraban. Ahora cada agente sabe que las skills están en la carpeta de usuario de Copilot (`~/.copilot/skills/`) y las lee directamente desde ahí si Copilot no se las entrega.
+
 ## [1.0.0] - 2026-11-23
 Primera versión de **Agente Q, con licencia para evolucionar**: agentes de GitHub Copilot para evolucionar microservicios Java existentes (Spring Boot o Quarkus). Complementa a Agente 007, que crea microservicios nuevos.
 
